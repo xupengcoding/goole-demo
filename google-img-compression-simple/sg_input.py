@@ -11,7 +11,7 @@ import numpy as np
 #global variable decribing the CIFIAR-10 data set
 IMAGE_SIZE = 32
 NUM_CLASS = 10
-NUM_EXAMPLES_PER_EPOCH_FOR_TRAIN = 5000
+NUM_EXAMPLES_PER_EPOCH_FOR_TRAIN = 50000
 NUM_EXAMPLES_PER_EPOCH_FOR_EVAL = 10000
 
 def read_cifar10(filename_queue):
@@ -76,7 +76,7 @@ def _generate_image_and_label_batch(image, label, min_queue_examples,
 def inputs(eval_data, data_dir, batch_size):
     """construct input for evaluation and training using reader ops"""
     if not eval_data:
-        filenames = [os.path.join(data_dir, 'data_batch_%d,bin' %i)
+        filenames = [os.path.join(data_dir, 'data_batch_%d' %i)
                      for i in xrange(1, 6)]
         num_examples_per_epoch = NUM_EXAMPLES_PER_EPOCH_FOR_TRAIN
     else:
