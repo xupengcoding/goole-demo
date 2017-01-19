@@ -25,7 +25,7 @@ def train():
         #global_step = tf.Variable(0, trainable=False, name='global_step')
         #global_step should be a tensor with name 'global_step')
         #get images from input
-        images, labels = sg_model.inputs(eval_data=False)
+        images, labels = sg_model.inputs(eval_data=False, batch_size=FLAGS.batch_size)
         #inference model
         resi_images = sg_model.inference(images)
         #calculate loss
@@ -37,10 +37,12 @@ def train():
         #train op, back propagation
         train_op = tf.train.AdamOptimizer(learning_rate).minimize(loss_l1,
                                                                   global_step=global_step)
+        init = tf.initialize_all_variables()
+        init_local = tf.initialize_local_variables()
         class _LoggerHook(tf.train.SessionRunHook):
             """logs loss and runtime"""
             def begin(self):
-                self._step = -1
+                self._step = -3#there is two step for initialize
 
             def before_run(self, run_context):
                 self._step += 1
@@ -68,6 +70,8 @@ def train():
                                                    log_device_placement=
                                                    FLAGS.log_device_placement)) as mon_sess:
             summary_writer = tf.summary.FileWriter('./log', mon_sess.graph)
+            mon_sess.run(init)
+            mon_sess.run(init_local)
             while not mon_sess.should_stop():
                 mon_sess.run(train_op)
             summary_writer.close()

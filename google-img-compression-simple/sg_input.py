@@ -76,11 +76,11 @@ def _generate_image_and_label_batch(image, label, min_queue_examples,
 def inputs(eval_data, data_dir, batch_size):
     """construct input for evaluation and training using reader ops"""
     if not eval_data:
-        filenames = [os.path.join(data_dir, 'data_batch_%d' %i)
+        filenames = [os.path.join(data_dir, 'data_batch_%d.bin' %i)
                      for i in xrange(1, 6)]
         num_examples_per_epoch = NUM_EXAMPLES_PER_EPOCH_FOR_TRAIN
     else:
-        filenames = [os.path.join(data_dir, 'test_batch.bin')]
+        filenames = [os.path.join(data_dir, 'test_batch.bin')] #orig is test_batch
         num_examples_per_epoch = NUM_EXAMPLES_PER_EPOCH_FOR_EVAL
     #create a queue taht prodeuces the filenames to read
     filename_queue = tf.train.string_input_producer(filenames)
@@ -94,11 +94,11 @@ def inputs(eval_data, data_dir, batch_size):
     #crop the central, for me the total 32x32 img is used
     resized_image = tf.image.resize_image_with_crop_or_pad(reshaped_image,
                                                            width, height)
-    float_image = tf.image.per_image_standardization(resized_image)
+    #float_image = tf.image.per_image_standardization(resized_image)
     #random shuffle param
     min_fraction_of_examples_in_queue = 0.4
     min_queue_examples = (num_examples_per_epoch*min_fraction_of_examples_in_queue)
     #generate a batch of images and labels by building up a queue of examples
-    return _generate_image_and_label_batch(float_image, read_input.label,
+    return _generate_image_and_label_batch(resized_image, read_input.label,
                                            min_queue_examples, batch_size,
                                            shuffle=False)

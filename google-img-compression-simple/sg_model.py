@@ -36,9 +36,9 @@ FLAGS = tf.app.flags.FLAGS
 
 #basic model param
 #batch_size is set to be 1 for image compression
-tf.app.flags.DEFINE_integer('batch_size', 1,
+tf.app.flags.DEFINE_integer('batch_size', 128,
                             """number of images to process in a batch.""")
-tf.app.flags.DEFINE_string('data_dir', 'cifar-10-batches-py',
+tf.app.flags.DEFINE_string('data_dir', 'cifar-10-batches-bin',
                            """path to train data.""")
 tf.app.flags.DEFINE_boolean('use_fp16', False, """train the model using fp16.""")
 tf.app.flags.DEFINE_integer('compress_iteration', 16,
@@ -274,12 +274,12 @@ def loss(out_resi_images):
     return tf.add_n(tf.get_collection('losses'), name='total_loss')
 #use a class
 
-def inputs(eval_data):
+def inputs(eval_data, batch_size):
   """Construct input for CIFAR evaluation using the Reader ops.
 
   Args:
     eval_data: bool, indicating if one should use the train or eval data set.
-
+    batch_size: batch_size
   Returns:
     images: Images. 4D tensor of [batch_size, IMAGE_SIZE, IMAGE_SIZE, 3] size.
     labels: Labels. 1D tensor of [batch_size] size.
@@ -293,7 +293,7 @@ def inputs(eval_data):
   data_dir = FLAGS.data_dir
   images, labels = sg_input.inputs(eval_data=eval_data,
                                    data_dir=data_dir,
-                                   batch_size=FLAGS.batch_size)
+                                   batch_size=batch_size)
   if FLAGS.use_fp16:
     images = tf.cast(images, tf.float16)
     labels = tf.cast(labels, tf.float16)
