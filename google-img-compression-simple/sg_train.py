@@ -33,7 +33,7 @@ def train():
         #learning decay
         starter_learning_rate = 0.1
         learning_rate = tf.train.exponential_decay(starter_learning_rate, global_step,
-                                                   20000, 0.1, staircase=True)
+                                                   150000, 0.1, staircase=True)
         #train op, back propagation
         train_op = tf.train.AdamOptimizer(learning_rate).minimize(loss_l1,
                                                                   global_step=global_step)

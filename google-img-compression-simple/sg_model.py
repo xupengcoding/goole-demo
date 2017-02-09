@@ -35,7 +35,7 @@ import sg_input
 FLAGS = tf.app.flags.FLAGS
 
 #basic model param
-#batch_size is set to be 1 for image compression
+#
 tf.app.flags.DEFINE_integer('batch_size', 128,
                             """number of images to process in a batch.""")
 tf.app.flags.DEFINE_string('data_dir', 'cifar-10-batches-bin',
